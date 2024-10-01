@@ -4,6 +4,8 @@
 
 package com.mycompany.sistemaparqueo;
 
+import com.mycompany.sistemaparqueo.GUI.PantallaInicio;
+
 /**
  *
  * @author kevin
@@ -11,6 +13,6 @@ package com.mycompany.sistemaparqueo;
 public class SistemaParqueo {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        PantallaInicio a = new PantallaInicio();
     }
 }
