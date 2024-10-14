@@ -1,12 +1,13 @@
 package com.mycompany.sistemaparqueo.GUI;
 
+import com.mycompany.sistemaparqueo.Clases.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Menu extends JFrame {
 
-    public Menu(int tipoUsuario) {
+    public Menu(Persona persona) {
         // Configuraciones de la ventana
         setTitle("Menú");
         setSize(300, 400); // Ajustado para permitir más botones
@@ -19,7 +20,7 @@ public class Menu extends JFrame {
         add(panel);
 
         // Mostrar botones dependiendo del tipo de usuario
-        if (tipoUsuario == 1) {
+        if (persona.getTipo() == "Administrador") {
             // Crear y agregar botones para el tipo 1
             crearBoton(panel, "Crear nuevo administrador", 10, 20, e -> crearNuevoAdministrador());
             crearBoton(panel, "Información de usuario", 10, 60, e -> informacionUsuario());
@@ -29,7 +30,7 @@ public class Menu extends JFrame {
             crearBoton(panel, "Crear Inspector", 10, 220, e -> crearInspector());
             crearBoton(panel, "Inspectores", 10, 260, e -> verInspectores());
             crearBoton(panel, "Cerrar Sesión",10, 300, e -> cerrarSesion()); 
-        } else if (tipoUsuario == 2) {
+        } else if (persona.getTipo() == "Usuario") {
             // Crear y agregar botones para el tipo 2
             crearBoton(panel, "Lista de Carros", 10, 20, e -> mostrarListaDeCarros());
             crearBoton(panel, "Parquear", 10, 60, e -> parquear());
@@ -37,7 +38,7 @@ public class Menu extends JFrame {
             crearBoton(panel, "Desaparcar", 10, 140, e -> desaparecer());
             crearBoton(panel, "Reportes", 10, 180, e -> mostrarReportes());
             crearBoton(panel, "Cerrar Sesión",10, 220, e -> cerrarSesion()); 
-        } else if (tipoUsuario == 3) {
+        } else if (persona.getTipo() == "Inspector") {
             // Mostrar opciones para el tipo 3
             crearBoton(panel, "Revisar parqueo", 10, 20, e -> revisarParqueo());
             crearBoton(panel, "Perfil", 10, 60, e -> verPerfil());
@@ -60,7 +61,9 @@ public class Menu extends JFrame {
     // Métodos para las acciones de los botones
     private void crearNuevoAdministrador() {
         // Lógica para crear un nuevo administrador
-        JOptionPane.showMessageDialog(this, "Crear nuevo administrador");
+        dispose();
+        Persona nuevaPersona = new Admin();
+        new Registrar(nuevaPersona);
     }
     
     private void cerrarSesion() {
@@ -90,8 +93,10 @@ public class Menu extends JFrame {
     }
 
     private void crearInspector() {
-        // Lógica para crear un inspector
-        JOptionPane.showMessageDialog(this, "Crear inspector");
+        // Lógica para crear un nuevo administrador
+        dispose();
+        Persona nuevaPersona = new Inspector();
+        new Registrar(nuevaPersona);
     }
 
     private void verInspectores() {

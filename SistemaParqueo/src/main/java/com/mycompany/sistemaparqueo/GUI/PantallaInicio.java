@@ -1,5 +1,6 @@
 package com.mycompany.sistemaparqueo.GUI;
 
+import com.mycompany.sistemaparqueo.Clases.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,7 +58,8 @@ public class PantallaInicio extends JFrame {
                 } else {
                     // Cierra la ventana de inicio antes de abrir el menú
                     dispose();
-                    new Menu(1);
+                    Persona persona = new Admin();
+                    new Menu(persona);
                 }
             }
         });
@@ -71,9 +73,9 @@ public class PantallaInicio extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Cierra la ventana de inicio al abrir la ventana de registro
                 dispose();
-                new Registrar();
+                Persona NuevoUsuario = new Usuario();
+                new Registrar(NuevoUsuario);
             }
         });
 

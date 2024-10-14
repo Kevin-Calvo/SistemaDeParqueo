@@ -4,10 +4,32 @@
  */
 package com.mycompany.sistemaparqueo.Clases;
 
+import java.time.YearMonth;
+import java.util.ArrayList;
+
 /**
  *
  * @author kevin
  */
-public class Usuario {
+public class Usuario extends Persona{
     
+    ArrayList<Carro> listaCarros;
+    Tarjeta tarjeta;
+    
+    public Usuario(){
+        this.tipo = "Usuario";
+        this.listaCarros = new ArrayList<>(); 
+    }
+    
+    public void setTarjeta(String numero, YearMonth vencimiento, String validacion){
+        this.tarjeta = new Tarjeta(numero, vencimiento, validacion);
+    }
+    
+    public Tarjeta getTarjeta(){
+        return this.tarjeta;
+    }
+    
+    public void agregarCarro(){
+        
+    }
 }

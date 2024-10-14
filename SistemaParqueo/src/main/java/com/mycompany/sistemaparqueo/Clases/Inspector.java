@@ -8,6 +8,18 @@ package com.mycompany.sistemaparqueo.Clases;
  *
  * @author kevin
  */
-public class Inspector {
+public class Inspector extends Admin{
+    String terminal;
     
+    public Inspector(){
+        this.tipo = "Inspector";
+    }
+    
+    public void setTerminal(String terminal){
+        this.terminal = terminal;
+    }
+    
+    public String getTerminal(){
+        return this.terminal;
+    }
 }

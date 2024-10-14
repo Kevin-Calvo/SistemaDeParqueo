@@ -8,6 +8,9 @@ package com.mycompany.sistemaparqueo.Clases;
  *
  * @author kevin
  */
-public class Admin {
+public class Admin extends Persona {
     
+    public Admin(){
+        this.tipo = "Administrador";
+    }
 }
