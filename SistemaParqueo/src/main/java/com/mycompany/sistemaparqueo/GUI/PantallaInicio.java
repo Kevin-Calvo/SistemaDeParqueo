@@ -1,11 +1,14 @@
 package com.mycompany.sistemaparqueo.GUI;
 
 import com.mycompany.sistemaparqueo.Clases.*;
+import com.mycompany.sistemaparqueo.SistemaParqueo;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class PantallaInicio extends JFrame {
 
@@ -52,13 +55,25 @@ public class PantallaInicio extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String codigoUsuario = usuarioText.getText();
                 String password = new String(passwordText.getPassword());
-
-                if (!codigoUsuario.equals("aaa")) {
+                String[] data = verificarUsuario(codigoUsuario, password);
+                if (data == null) {
                     JOptionPane.showMessageDialog(null, "Usuario no existe");
                 } else {
                     // Cierra la ventana de inicio antes de abrir el menú
                     dispose();
-                    Persona persona = new Admin();
+                    Persona persona = null;
+                    
+                    if (data[0].equals("Usuario")){
+                        persona = new Usuario(data[0], data[1], data[2], data[3], 
+                                data[4], data[5], data[6], data[7], data[8]);
+                    } else if (data[0].equals("Administrador")){
+                        persona = new Admin(data[0], data[1], data[2], data[3], 
+                                data[4], data[5], data[6], data[7], data[8]);
+                    } else if (data[0].equals("Inspector")){
+                        persona = new Inspector(data[0], data[1], data[2], data[3], 
+                                data[4], data[5], data[6], data[7], data[8], data[9]);
+                    }
+                    dispose();
                     new Menu(persona);
                 }
             }
@@ -75,13 +90,23 @@ public class PantallaInicio extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 Persona NuevoUsuario = new Usuario();
-                new Registrar(NuevoUsuario);
+                new Registrar(NuevoUsuario, NuevoUsuario);
             }
         });
 
 
         // Mostrar la ventana
         setVisible(true);
+    }
+    
+    private String[] verificarUsuario(String correo, String password){
+        for (int i = 0; i < SistemaParqueo.ListaDeUsuarios.size(); i ++){
+
+            if ((SistemaParqueo.ListaDeUsuarios.get(i)[5].equals(password)) && (SistemaParqueo.ListaDeUsuarios.get(i)[7].equals(correo))) {
+                System.out.println("Aqui si entra");
+                return SistemaParqueo.ListaDeUsuarios.get(i);}
+        }
+        return null;
     }
 }
 

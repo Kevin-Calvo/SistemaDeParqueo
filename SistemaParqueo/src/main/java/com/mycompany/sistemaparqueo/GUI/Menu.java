@@ -20,28 +20,29 @@ public class Menu extends JFrame {
         add(panel);
 
         // Mostrar botones dependiendo del tipo de usuario
-        if (persona.getTipo() == "Administrador") {
+        if (persona.getTipo().equals("Administrador")) {
             // Crear y agregar botones para el tipo 1
-            crearBoton(panel, "Crear nuevo administrador", 10, 20, e -> crearNuevoAdministrador());
-            crearBoton(panel, "Información de usuario", 10, 60, e -> informacionUsuario());
+            crearBoton(panel, "Información de usuario", 10, 20, e -> informacionUsuario(persona));
+            crearBoton(panel, "Crear nuevo administrador", 10, 60, e -> crearNuevoAdministrador(persona));
             crearBoton(panel, "Configurar Parqueos", 10, 100, e -> configurarParqueos());
             crearBoton(panel, "Agregar Parqueos", 10, 140, e -> agregarParqueos());
             crearBoton(panel, "Reportes", 10, 180, e -> mostrarReportes());
-            crearBoton(panel, "Crear Inspector", 10, 220, e -> crearInspector());
+            crearBoton(panel, "Crear Inspector", 10, 220, e -> crearInspector(persona));
             crearBoton(panel, "Inspectores", 10, 260, e -> verInspectores());
             crearBoton(panel, "Cerrar Sesión",10, 300, e -> cerrarSesion()); 
-        } else if (persona.getTipo() == "Usuario") {
+        } else if (persona.getTipo().equals("Usuario")) {
             // Crear y agregar botones para el tipo 2
-            crearBoton(panel, "Lista de Carros", 10, 20, e -> mostrarListaDeCarros());
-            crearBoton(panel, "Parquear", 10, 60, e -> parquear());
-            crearBoton(panel, "Agregar tiempo", 10, 100, e -> agregarTiempo());
-            crearBoton(panel, "Desaparcar", 10, 140, e -> desaparecer());
-            crearBoton(panel, "Reportes", 10, 180, e -> mostrarReportes());
-            crearBoton(panel, "Cerrar Sesión",10, 220, e -> cerrarSesion()); 
-        } else if (persona.getTipo() == "Inspector") {
+            crearBoton(panel, "Información de usuario", 10, 20, e -> informacionUsuario(persona));
+            crearBoton(panel, "Lista de Carros", 10, 60, e -> mostrarListaDeCarros());
+            crearBoton(panel, "Parquear", 10, 100, e -> parquear());
+            crearBoton(panel, "Agregar tiempo", 10, 140, e -> agregarTiempo());
+            crearBoton(panel, "Desaparcar", 10, 180, e -> desaparecer());
+            crearBoton(panel, "Reportes", 10, 220, e -> mostrarReportes());
+            crearBoton(panel, "Cerrar Sesión",10, 260, e -> cerrarSesion()); 
+        } else if (persona.getTipo().equals("Inspector")) {
             // Mostrar opciones para el tipo 3
-            crearBoton(panel, "Revisar parqueo", 10, 20, e -> revisarParqueo());
-            crearBoton(panel, "Perfil", 10, 60, e -> verPerfil());
+            crearBoton(panel, "Informacion de Usuario", 10, 20, e -> informacionUsuario(persona));
+            crearBoton(panel, "Revisar parqueo", 10, 60, e -> revisarParqueo());
             crearBoton(panel, "Reportes", 10, 100, e -> mostrarReportes());
             crearBoton(panel, "Cerrar Sesión",10, 140, e -> cerrarSesion()); 
         }
@@ -59,11 +60,11 @@ public class Menu extends JFrame {
     }
 
     // Métodos para las acciones de los botones
-    private void crearNuevoAdministrador() {
+    private void crearNuevoAdministrador(Persona persona) {
         // Lógica para crear un nuevo administrador
         dispose();
         Persona nuevaPersona = new Admin();
-        new Registrar(nuevaPersona);
+        new Registrar(nuevaPersona, persona);
     }
     
     private void cerrarSesion() {
@@ -72,9 +73,10 @@ public class Menu extends JFrame {
         new PantallaInicio();
     }
 
-    private void informacionUsuario() {
+    private void informacionUsuario(Persona persona) {
         // Lógica para mostrar información de usuario
-        JOptionPane.showMessageDialog(this, "Información de usuario");
+        dispose();
+        new ModificarUsuario(persona);
     }
 
     private void configurarParqueos() {
@@ -92,11 +94,11 @@ public class Menu extends JFrame {
         JOptionPane.showMessageDialog(this, "Mostrar reportes");
     }
 
-    private void crearInspector() {
+    private void crearInspector(Persona persona) {
         // Lógica para crear un nuevo administrador
         dispose();
         Persona nuevaPersona = new Inspector();
-        new Registrar(nuevaPersona);
+        new Registrar(nuevaPersona, persona);
     }
 
     private void verInspectores() {
@@ -128,12 +130,6 @@ public class Menu extends JFrame {
         // Lógica para revisar parqueo
         JOptionPane.showMessageDialog(this, "Revisar parqueo");
     }
-
-    private void verPerfil() {
-        // Lógica para ver perfil
-        JOptionPane.showMessageDialog(this, "Ver perfil");
-    }
-
 
 }
 

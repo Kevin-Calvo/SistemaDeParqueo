@@ -9,11 +9,13 @@ package com.mycompany.sistemaparqueo.Clases;
  * @author kevin
  */
 public class Carro {
+    String usuario;
     String placa;
     String marca;
     String modelo;
     
-    public Carro(String placa){
+    public Carro(String usuario, String placa){
+        this.usuario = usuario;
         this.placa = placa;
     }
     

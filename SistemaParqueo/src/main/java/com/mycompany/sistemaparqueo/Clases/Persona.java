@@ -10,12 +10,13 @@ import java.time.LocalDate;
  *
  * @author kevin
  */
-public class Persona {
+public abstract class Persona {
     String tipo;
     String nombre;
     String apellido;
     String telefono;
     String correo;
+    String password;
     String direccion;
     String identificacion;
     LocalDate fechaIngreso;
@@ -60,6 +61,10 @@ public class Persona {
         this.correo = correo;
     }
     
+    public void setPassword(String password){
+        this.password = password;
+    }
+    
     public String getDireccion(){
         return this.direccion;
     }
@@ -76,11 +81,23 @@ public class Persona {
         this.identificacion = identificacion;
     }
     
-    public LocalDate fechaIngreso(){
+    public LocalDate getfechaIngreso(){
         return this.fechaIngreso;
     }
     
     public void setFechaIngreso(LocalDate fechaingreso){
         this.fechaIngreso = fechaingreso;
     }
+    
+    public void setTerminal(String terminal){
+        
+    };
+    
+    public String getTerminal(){
+        return null;
+    }
+    
+    public String[] toArray(){
+        return null;
+    };
 }

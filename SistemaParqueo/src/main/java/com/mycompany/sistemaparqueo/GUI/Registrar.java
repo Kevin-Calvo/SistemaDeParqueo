@@ -1,6 +1,7 @@
 package com.mycompany.sistemaparqueo.GUI;
 
-import com.mycompany.sistemaparqueo.Clases.Persona;
+import com.mycompany.sistemaparqueo.Clases.*;
+import com.mycompany.sistemaparqueo.SistemaParqueo;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,7 +11,7 @@ import java.time.format.DateTimeParseException;
 
 public class Registrar extends JFrame {
 
-    public Registrar(Persona persona) {
+    public Registrar(Persona persona, Persona existente) {
         // Configuraciones de la ventana
         setTitle("Pantalla de Registro");
         setSize(400, 450);
@@ -85,6 +86,17 @@ public class Registrar extends JFrame {
         JPasswordField pinText = new JPasswordField(20); // El campo de PIN oculta el texto
         pinText.setBounds(120, 260, 250, 25);
         panel.add(pinText);
+        
+        JButton volverButton = new JButton("Volver");
+        volverButton.setBounds(10, 380, 100, 25);
+        panel.add(volverButton);
+        volverButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                dispose();
+                new PantallaInicio();
+            }
+        });
 
         // Botón de registro
         JButton registrarButton = new JButton("Registrar");
@@ -96,7 +108,7 @@ public class Registrar extends JFrame {
             registrarButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    registrarUsuario(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, "Usuario", persona);
+                    registrarUsuario(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, "Usuario", persona, existente);
                 }
             });
         } else if (persona.getTipo().equals("Administrador")) {
@@ -104,7 +116,7 @@ public class Registrar extends JFrame {
             registrarButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    registrarAdministrador(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona);
+                    registrarAdministrador(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona, existente);
                 }
             });
         } else if (persona.getTipo().equals("Inspector")) {
@@ -113,7 +125,7 @@ public class Registrar extends JFrame {
             registrarButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    registrarInspector(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona);
+                    registrarInspector(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona, existente);
                 }
             });
         }
@@ -121,7 +133,7 @@ public class Registrar extends JFrame {
 
     private void registrarUsuario(JTextField nombreText, JTextField apellidoText, JTextField telefonoText,
                                   JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, String tipo,
-                                  Persona persona) {
+                                  Persona persona, Persona existente) {
         String nombre = nombreText.getText();
         String apellido = apellidoText.getText();
         String telefono = telefonoText.getText();
@@ -142,19 +154,38 @@ public class Registrar extends JFrame {
         } else if (!validarDireccion(direccion)) {
             JOptionPane.showMessageDialog(null, "La dirección debe tener entre 5 y 60 caracteres.");
         } else if (!validarIdentificacion(id)) {
-            JOptionPane.showMessageDialog(null, "La identificación debe tener entre 2 y 25 caracteres.");
+            JOptionPane.showMessageDialog(null, "La identificación no puede ser repetida y debe tener entre 2 y 25 caracteres.");
         } else if (!validarPin(pin)) {
             JOptionPane.showMessageDialog(null, "El PIN debe tener exactamente 4 caracteres.");
         } else {
+            
+            persona.setNombre(nombre);
+            persona.setApellido(apellido);
+            persona.setTelefono(telefono);
+            persona.setCorreo(correo);
+            persona.setDireccion(direccion);
+            persona.setIdentificacion(id);
+            persona.setPassword(pin);
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate fecha1 = LocalDate.parse("01-01-3000", formatter);
+            
+            if (fecha1.isEqual(persona.getfechaIngreso())){
+                persona.setFechaIngreso(LocalDate.now());
+            }
+            
+            if (persona.getTipo().equals("Usuario")) existente = persona;
+            
+            SistemaParqueo.ListaDeUsuarios.add(persona.toArray());
+            SistemaParqueo.controladorArchivos.escribirArchivo(SistemaParqueo.ListaDeUsuarios, "Usuarios.txt");
             JOptionPane.showMessageDialog(null, "Usuario registrado correctamente.");
             dispose();
-            new Menu(persona); // Suponiendo que Menu es otra pantalla
+            new Menu(existente); // Suponiendo que Menu es otra pantalla
         }
     }
 
     private void registrarAdministrador(JTextField nombreText, JTextField apellidoText, JTextField telefonoText,
-                                        JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, JPanel panel, Persona persona) {
-        registrarUsuario(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, "Administrador", persona);
+                                        JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, JPanel panel, Persona persona, Persona existente) {
 
         JTextField fechaIngresoText = (JTextField) panel.getComponent(16);
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -163,19 +194,27 @@ public class Registrar extends JFrame {
             if (!validarFecha(fechaIngreso)) {
                 JOptionPane.showMessageDialog(null, "La fecha de ingreso debe ser menor o igual a la fecha actual.");
             }
+            else
+            {
+                persona.setFechaIngreso(fechaIngreso);
+                registrarUsuario(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, "Administrador", persona, existente);
+            }
         } catch (DateTimeParseException ex) {
             JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Debe ser dd-MM-yyyy.");
         }
     }
 
     private void registrarInspector(JTextField nombreText, JTextField apellidoText, JTextField telefonoText,
-                                    JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, JPanel panel, Persona persona) {
-        registrarAdministrador(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona);
+                                    JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, JPanel panel, Persona persona, Persona existente) {
 
         JTextField terminalText = (JTextField) panel.getComponent(18);
         String terminal = terminalText.getText();
         if (!validarTerminal(terminal)) {
             JOptionPane.showMessageDialog(null, "La terminal debe tener exactamente 6 caracteres.");
+        }
+        else{
+            persona.setTerminal(terminal);
+            registrarAdministrador(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona, existente);
         }
     }
 
@@ -222,8 +261,21 @@ public class Registrar extends JFrame {
     }
 
     private boolean validarIdentificacion(String id) {
-        return id.length() >= 2 && id.length() <= 25;
+    // Verificar que la longitud de la identificación esté en el rango correcto
+    if (id.length() >= 2 && id.length() <= 25) {
+        // Iterar sobre la lista de usuarios para buscar si la identificación ya existe
+        for (String[] data : SistemaParqueo.ListaDeUsuarios) {
+            // Comparar la identificación (en la posición 8 del array) con el id proporcionado
+            if (data[7].equals(id)) {
+                return false; // La identificación ya existe
+            }
+        }
+        return true; // La identificación no existe
+    } else {
+        return false; // La longitud de la identificación no es válida
     }
+}
+
 
     private boolean validarPin(String pin) {
         return pin.length() == 4 && pin.matches("\\d{4}");
@@ -234,6 +286,13 @@ public class Registrar extends JFrame {
     }
 
     private boolean validarTerminal(String terminal) {
+        for (String[] data : SistemaParqueo.ListaDeUsuarios) {
+            // Comparar la identificación (en la posición 8 del array) con el id proporcionado
+            if (data[0].equals("Inspector")) {
+                if (data[9].equals(terminal))
+                return false; // La identificación ya existe
+            }
+        }
         return terminal.length() == 6;
     }
 }
