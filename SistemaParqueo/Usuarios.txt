@@ -1,3 +1,2 @@
-Inspector;Yadir;Calvo;83453888;kevinyadir@hotmail.com;1504;Por ahi;119030041;14-10-2024;123456
 Usuario;Andres;Arroyo;83453888;kevinyadir@hotmail.com;1504;Aun mas alla;119030043;01-01-2024
 Administrador;Kevin;Calvo;83453887;kevinyadir@hotmail.com;1504;Muy lejos;119030042;01-01-2024

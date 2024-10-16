@@ -1,0 +1,2 @@
+119030043;987506;Lancer;Mitsubishi
+119030043;123456;No especifica;No especifica

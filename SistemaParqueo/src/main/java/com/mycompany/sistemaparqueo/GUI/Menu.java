@@ -33,7 +33,7 @@ public class Menu extends JFrame {
         } else if (persona.getTipo().equals("Usuario")) {
             // Crear y agregar botones para el tipo 2
             crearBoton(panel, "Información de usuario", 10, 20, e -> informacionUsuario(persona));
-            crearBoton(panel, "Lista de Carros", 10, 60, e -> mostrarListaDeCarros());
+            crearBoton(panel, "Lista de Carros", 10, 60, e -> mostrarListaDeCarros(persona));
             crearBoton(panel, "Parquear", 10, 100, e -> parquear());
             crearBoton(panel, "Agregar tiempo", 10, 140, e -> agregarTiempo());
             crearBoton(panel, "Desaparcar", 10, 180, e -> desaparecer());
@@ -61,20 +61,17 @@ public class Menu extends JFrame {
 
     // Métodos para las acciones de los botones
     private void crearNuevoAdministrador(Persona persona) {
-        // Lógica para crear un nuevo administrador
         dispose();
         Persona nuevaPersona = new Admin();
         new Registrar(nuevaPersona, persona);
     }
     
     private void cerrarSesion() {
-        //Logica para cerrar menu y volver a inicio
         dispose();
         new PantallaInicio();
     }
 
     private void informacionUsuario(Persona persona) {
-        // Lógica para mostrar información de usuario
         dispose();
         new ModificarUsuario(persona);
     }
@@ -95,7 +92,6 @@ public class Menu extends JFrame {
     }
 
     private void crearInspector(Persona persona) {
-        // Lógica para crear un nuevo administrador
         dispose();
         Persona nuevaPersona = new Inspector();
         new Registrar(nuevaPersona, persona);
@@ -106,9 +102,9 @@ public class Menu extends JFrame {
         JOptionPane.showMessageDialog(this, "Ver inspectores");
     }
 
-    private void mostrarListaDeCarros() {
-        // Lógica para mostrar la lista de carros
-        JOptionPane.showMessageDialog(this, "Lista de carros");
+    private void mostrarListaDeCarros(Persona persona) {
+       dispose();
+       new CarroGUI(persona);
     }
 
     private void parquear() {

@@ -17,6 +17,8 @@ public class Carro {
     public Carro(String usuario, String placa){
         this.usuario = usuario;
         this.placa = placa;
+        this.marca = "No especifica";
+        this.modelo = "No especifica";
     }
     
     public void setMarca(String marca){
@@ -39,4 +41,11 @@ public class Carro {
         return this.placa;
     }
     
+    public String[] toArray(){
+        return new String[]{
+        this.usuario,
+        this.placa,
+        this.modelo,
+        this.marca};
+    } 
 }

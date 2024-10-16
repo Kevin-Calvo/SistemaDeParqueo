@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -160,6 +161,25 @@ public class ModificarUsuario extends JFrame {
         JButton passwordButton = new JButton("Cambiar pin");
         passwordButton.setBounds(230, 440, 150, 30);
         add(passwordButton);
+        
+        passwordButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                dispose();
+                Random random = new Random();
+                int numero = 1000 + random.nextInt(9000); // Genera un número entre 1000 y 9999
+                System.out.println("Número generado: " + numero);
+                persona.setPassword(String.valueOf(numero));
+                
+                for (String[] data : SistemaParqueo.ListaDeUsuarios){
+                    if (data[7].equals(persona.getIdentificacion())) data[5] = String.valueOf(numero); 
+                }
+                
+                SistemaParqueo.controladorArchivos.escribirArchivo(SistemaParqueo.ListaDeUsuarios, "usuarios.txt");
+                
+                new CambioPin(persona);
+            }
+        });
 
         // Hacer visible la ventana
         setVisible(true);

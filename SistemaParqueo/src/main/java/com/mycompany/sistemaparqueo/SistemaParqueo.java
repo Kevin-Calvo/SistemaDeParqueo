@@ -24,6 +24,7 @@ public class SistemaParqueo {
 
         ListaDeUsuarios = controladorArchivos.leerDesdeArchivo("usuarios.txt");
         ListaDeTarjetas = controladorArchivos.leerDesdeArchivo("tarjetas.txt");
+        ListaDeCarros = controladorArchivos.leerDesdeArchivo("carros.txt");
         
         PantallaInicio a = new PantallaInicio();
     }

@@ -61,6 +61,10 @@ public abstract class Persona {
         this.correo = correo;
     }
     
+    public String getPassword(){
+        return this.password;
+    }
+    
     public void setPassword(String password){
         this.password = password;
     }

@@ -103,7 +103,6 @@ public class PantallaInicio extends JFrame {
         for (int i = 0; i < SistemaParqueo.ListaDeUsuarios.size(); i ++){
 
             if ((SistemaParqueo.ListaDeUsuarios.get(i)[5].equals(password)) && (SistemaParqueo.ListaDeUsuarios.get(i)[7].equals(correo))) {
-                System.out.println("Aqui si entra");
                 return SistemaParqueo.ListaDeUsuarios.get(i);}
         }
         return null;
