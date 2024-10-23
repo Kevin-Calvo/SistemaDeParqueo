@@ -1,2 +1,6 @@
-Usuario;Andres;Arroyo;83453888;kevinyadir@hotmail.com;1504;Aun mas alla;119030043;01-01-2024
-Administrador;Kevin;Calvo;83453887;kevinyadir@hotmail.com;1504;Muy lejos;119030042;01-01-2024
+Administrador;Camila;Lizano;12345678;camila@gmail.com;1504;aaaaaaa;123456;10-10-2024
+Inspector;Andrey;Calvo;83453888;andrey@gmail.com;1504;aaaaa;119030041;10-10-2024;123456
+Administrador;Kevi;Calvo;83453887;kevinyadir@hotmail.com;1504;Muy lejos;119030042;01-01-2024
+Inspector;Paco;Paquito;83453888;kevinyadir@hotmail.com;1504;Ufff ni idea;11;21-10-2024;123458
+Administrador;Camila;Lizano;12345678;kevinyadir@jhotmail.com;1504;ah no se, tu dime;12;30-04-2024
+Usuario;Andres;Arroyo;83453888;kevinyadir@hotmail.com;1504;por ahi;119030043;22-10-2024;500.0

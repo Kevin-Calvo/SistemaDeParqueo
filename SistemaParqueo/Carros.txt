@@ -1,2 +1,2 @@
-119030043;987506;Lancer;Mitsubishi
-119030043;123456;No especifica;No especifica
+119030043;123456;ppppp;No especifica;false
+119030043;987506;No especifica;ppp;false

@@ -9,8 +9,17 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Iterator;
 
+/**
+ * Ventana de interfaz gráfica que permite la gestión de la tarjeta de crédito del usuario.
+ * Permite mostrar los datos de la tarjeta y modificarlos si es necesario.
+ */
 public class TarjetaGUI extends JFrame {
 
+    /**
+     * Constructor de la ventana de tarjeta de crédito.
+     * 
+     * @param persona La persona cuya tarjeta se está gestionando.
+     */
     public TarjetaGUI(Persona persona) {
         //Obtener tarjeta del usuario
         Tarjeta tarjeta = null;
@@ -70,6 +79,7 @@ public class TarjetaGUI extends JFrame {
 
         // Acción de Guardar
         guardarButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String numero = numeroField.getText();
@@ -106,6 +116,7 @@ public class TarjetaGUI extends JFrame {
 
         // Acción de Volver
         volverButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Cerrar la ventana actual y volver a la pantalla anterior (puedes modificar esto según tus necesidades)
@@ -115,7 +126,13 @@ public class TarjetaGUI extends JFrame {
         });
     }
     
-    // Validar número de tarjeta de 16 dígitos
+    /**
+     * Valida el formato del número de tarjeta, asegurando que tenga 16 dígitos numéricos y no sea repetido.
+     * 
+     * @param numero El número de la tarjeta a validar.
+     * @param persona La persona cuya tarjeta se está validando.
+     * @return true si el número es válido, false en caso contrario.
+     */
     private boolean validarNumeroFormato(String numero, Persona persona) {
         for (String[] data : SistemaParqueo.ListaDeTarjetas){
             if (data[1].equals(numero)) {
@@ -125,9 +142,13 @@ public class TarjetaGUI extends JFrame {
         // El número debe ser un valor numérico de 16 dígitos
         return numero.matches("\\d{16}");
     }
- 
 
-    // Validar fecha de vencimiento en formato MM/YY
+    /**
+     * Valida la fecha de vencimiento de la tarjeta en formato MM/YY.
+     * 
+     * @param fecha La fecha de vencimiento a validar.
+     * @return true si la fecha es válida, false en caso contrario.
+     */
     private boolean validarFecha(String fecha) {
         // La fecha debe tener el formato MM/YY y ser válida
         if (!fecha.matches("(0[1-9]|1[0-2])/\\d{2}")) {
@@ -148,11 +169,15 @@ public class TarjetaGUI extends JFrame {
         return (anio > anioActual) || (anio == anioActual && mes >= mesActual);
     }
 
-    // Validar código de validación de 3 dígitos
+    /**
+     * Valida el código de validación de la tarjeta. Debe ser de 3 dígitos numéricos.
+     * 
+     * @param codigo El código de validación a validar.
+     * @return true si el código es válido, false en caso contrario.
+     */
     private boolean validarCodigo(String codigo) {
         // El código debe ser un número de exactamente 3 dígitos
         return codigo.matches("\\d{3}");
     }
 
 }
-

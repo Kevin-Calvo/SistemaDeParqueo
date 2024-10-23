@@ -10,8 +10,20 @@ import java.awt.event.WindowEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Esta clase representa la pantalla de inicio de sesión de la aplicación.
+ * Permite a los usuarios ingresar su código de usuario y contraseña para acceder al sistema.
+ * También proporciona una opción para registrarse en el sistema si el usuario no tiene cuenta.
+ * 
+ * @author [Tu nombre]
+ */
 public class PantallaInicio extends JFrame {
 
+    /**
+     * Constructor de la clase PantallaInicio.
+     * Configura la ventana de inicio de sesión, creando los componentes necesarios como etiquetas,
+     * campos de texto, botones, y sus respectivos manejadores de eventos.
+     */
     public PantallaInicio() {
         // Configuraciones de la ventana
         setTitle("Pantalla de Login");
@@ -51,6 +63,7 @@ public class PantallaInicio extends JFrame {
 
         // Acción del botón de iniciar sesión
         loginButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String codigoUsuario = usuarioText.getText();
@@ -66,6 +79,8 @@ public class PantallaInicio extends JFrame {
                     if (data[0].equals("Usuario")){
                         persona = new Usuario(data[0], data[1], data[2], data[3], 
                                 data[4], data[5], data[6], data[7], data[8]);
+                        persona.setDinero(data[9]);
+                        
                     } else if (data[0].equals("Administrador")){
                         persona = new Admin(data[0], data[1], data[2], data[3], 
                                 data[4], data[5], data[6], data[7], data[8]);
@@ -86,11 +101,12 @@ public class PantallaInicio extends JFrame {
 
         // Acción del botón de registrarse
         registerButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 Persona NuevoUsuario = new Usuario();
-                new Registrar(NuevoUsuario, NuevoUsuario);
+                new Registrar(NuevoUsuario, null);
             }
         });
 
@@ -99,13 +115,21 @@ public class PantallaInicio extends JFrame {
         setVisible(true);
     }
     
+    /**
+     * Verifica si un usuario con el código y la contraseña proporcionados existe en el sistema.
+     * 
+     * @param correo El código de usuario (correo electrónico) que se desea verificar
+     * @param password La contraseña que se desea verificar
+     * @return Un arreglo de String con los datos del usuario si la autenticación es exitosa,
+     *         o null si no se encuentra un usuario con las credenciales proporcionadas.
+     */
     private String[] verificarUsuario(String correo, String password){
-        for (int i = 0; i < SistemaParqueo.ListaDeUsuarios.size(); i ++){
-
-            if ((SistemaParqueo.ListaDeUsuarios.get(i)[5].equals(password)) && (SistemaParqueo.ListaDeUsuarios.get(i)[7].equals(correo))) {
-                return SistemaParqueo.ListaDeUsuarios.get(i);}
+        for (int i = 0; i < SistemaParqueo.ListaDeUsuarios.size(); i++) {
+            if ((SistemaParqueo.ListaDeUsuarios.get(i)[5].equals(password)) && 
+                (SistemaParqueo.ListaDeUsuarios.get(i)[7].equals(correo))) {
+                return SistemaParqueo.ListaDeUsuarios.get(i);
+            }
         }
         return null;
     }
 }
-

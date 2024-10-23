@@ -14,8 +14,22 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Esta clase representa una ventana para modificar los datos de un usuario.
+ * Extiende JFrame para crear una interfaz gráfica que permite editar la información
+ * de una persona en el sistema.
+ * 
+ * @author Kevin Yadir Calvo Rodriguez
+ */
 public class ModificarUsuario extends JFrame {
 
+    /**
+     * Constructor de la clase ModificarUsuario.
+     * 
+     * @param persona El objeto Persona que contiene la información del usuario
+     *                que se desea modificar. Esta información puede ser utilizada
+     *                para cargar los datos actuales del usuario en los campos de la interfaz.
+     */
     public ModificarUsuario(Persona persona) {
         // Configuración de la ventana
         setTitle("Modificar Usuario");
@@ -138,9 +152,7 @@ public class ModificarUsuario extends JFrame {
         }
         
        
-        });
-
-        
+        });        
         
         JButton volverButton = new JButton("Volver");
         volverButton.setBounds(50, 480, 120, 30);
@@ -166,18 +178,8 @@ public class ModificarUsuario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 dispose();
-                Random random = new Random();
-                int numero = 1000 + random.nextInt(9000); // Genera un número entre 1000 y 9999
-                System.out.println("Número generado: " + numero);
-                persona.setPassword(String.valueOf(numero));
                 
-                for (String[] data : SistemaParqueo.ListaDeUsuarios){
-                    if (data[7].equals(persona.getIdentificacion())) data[5] = String.valueOf(numero); 
-                }
-                
-                SistemaParqueo.controladorArchivos.escribirArchivo(SistemaParqueo.ListaDeUsuarios, "usuarios.txt");
-                
-                new CambioPin(persona);
+                new CambioPin(persona, " ", null);
             }
         });
 
@@ -205,7 +207,7 @@ public class ModificarUsuario extends JFrame {
                 JOptionPane.showMessageDialog(null, "El correo debe estar en formato parte1@parte2, donde parte1 y parte2 tienen al menos 3 caracteres.");
             } else if (!validarDireccion(direccion)) {
                 JOptionPane.showMessageDialog(null, "La dirección debe tener entre 5 y 60 caracteres.");
-            } else if (!validarIdentificacion(id)) {
+            } else if (!validarIdentificacion(id, persona)) {
                 JOptionPane.showMessageDialog(null, "La identificación no puede ser repetida y debe tener entre 2 y 25 caracteres.");
             } else {
 
@@ -271,34 +273,79 @@ public class ModificarUsuario extends JFrame {
     
 
     // Métodos de validación de datos
+    /**
+    * Valida que el nombre tenga entre 2 y 20 caracteres.
+    *
+    * @param nombre El nombre a validar.
+    * @return true si el nombre cumple con la longitud válida (entre 2 y 20 caracteres),
+    *         false en caso contrario.
+    */
     private boolean validarNombre(String nombre) {
         return nombre.length() >= 2 && nombre.length() <= 20;
     }
 
+    /**
+    * Valida que el apellido tenga entre 1 y 40 caracteres.
+    *
+    * @param apellido El apellido a validar.
+    * @return true si el apellido cumple con la longitud válida (entre 1 y 40 caracteres),
+    *         false en caso contrario.
+    */
     private boolean validarApellido(String apellido) {
         return apellido.length() >= 1 && apellido.length() <= 40;
     }
 
+    /**
+    * Valida que el teléfono tenga exactamente 8 dígitos numéricos.
+    *
+    * @param telefono El número de teléfono a validar.
+    * @return true si el teléfono tiene exactamente 8 dígitos, false en caso contrario.
+    */
     private boolean validarTelefono(String telefono) {
         return telefono.matches("\\d{8}");
     }
 
+    /**
+    * Valida que el correo electrónico tenga un formato válido.
+    *
+    * @param correo El correo electrónico a validar.
+    * @return true si el correo tiene un formato válido, false en caso contrario.
+    */
     private boolean validarCorreo(String correo) {
         return correo.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
     }
 
+    /**
+    * Valida que la dirección tenga entre 5 y 60 caracteres.
+    *
+    * @param direccion La dirección a validar.
+    * @return true si la dirección cumple con la longitud válida (entre 5 y 60 caracteres),
+    *         false en caso contrario.
+    */
     private boolean validarDireccion(String direccion) {
         return direccion.length() >= 5 && direccion.length() <= 60;
     }
 
-    private boolean validarIdentificacion(String id) {
+    /**
+    * Valida que la identificación de la persona esté en el rango de longitud correcto
+    * y que no exista una identificación duplicada en la lista de usuarios.
+    *
+    * @param id La identificación a validar.
+    * @param persona La persona que contiene la identificación actual (para evitar comparación con su propia ID).
+    * @return true si la identificación cumple con la longitud válida y no está duplicada,
+    *         false en caso contrario.
+    */
+    private boolean validarIdentificacion(String id, Persona persona) {
     // Verificar que la longitud de la identificación esté en el rango correcto
         if (id.length() >= 2 && id.length() <= 25) {
             // Iterar sobre la lista de usuarios para buscar si la identificación ya existe
             for (String[] data : SistemaParqueo.ListaDeUsuarios) {
-                // Comparar la identificación (en la posición 8 del array) con el id proporcionado
-                if (data[7].equals(id)) {
-                    return false; // La identificación ya existe
+                
+                if (!data[7].equals(persona.getIdentificacion())){
+                    // Comparar la identificación (en la posición 8 del array) con el id proporcionado
+                    if (data[7].equals(id)) {
+                        return false; // La identificación ya existe
+                    }
                 }
             }
             return true; // La identificación no existe
@@ -308,6 +355,15 @@ public class ModificarUsuario extends JFrame {
     }
 
 
+    /**
+    * Valida si un número de terminal es válido.
+    * El terminal debe tener exactamente 6 caracteres y no debe estar duplicado
+    * en la lista de usuarios con el rol de "Inspector".
+    * 
+    * @param terminal El número de terminal a validar.
+    * @return true si el terminal es válido (tiene 6 caracteres y no está duplicado),
+    *         false en caso contrario.
+    */
     private boolean validarTerminal(String terminal) {
         for (String[] data : SistemaParqueo.ListaDeUsuarios) {
             // Comparar la identificación (en la posición 8 del array) con el id proporcionado

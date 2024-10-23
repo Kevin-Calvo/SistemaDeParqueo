@@ -9,8 +9,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Esta clase representa la ventana de registro de usuario en el sistema.
+ * Permite a los usuarios crear un nuevo perfil o modificar el perfil de un usuario existente.
+ * 
+ * @author Kevin Yadir Calvo Rodriguez
+ */
 public class Registrar extends JFrame {
-
+     /**
+     * Constructor de la clase Registrar.
+     * Configura la ventana de registro de usuario, creando los componentes necesarios como etiquetas,
+     * campos de texto, botones, y sus respectivos manejadores de eventos.
+     *
+     * @param persona El objeto de tipo Persona que representa al usuario que se registrará o modificará.
+     * @param existente El objeto de tipo Persona que representa a admin generando un inspector o admin
+     */
     public Registrar(Persona persona, Persona existente) {
         // Configuraciones de la ventana
         setTitle("Pantalla de Registro");
@@ -87,6 +100,38 @@ public class Registrar extends JFrame {
         pinText.setBounds(120, 260, 250, 25);
         panel.add(pinText);
         
+        JLabel fechaIngresoLabel = new JLabel("Fecha Ingreso:");
+        fechaIngresoLabel.setBounds(10, 300, 100, 25);
+        panel.add(fechaIngresoLabel);
+        fechaIngresoLabel.setVisible(false);
+        
+        JTextField fechaIngresoText = new JTextField(20);
+        fechaIngresoText.setBounds(120, 300, 250, 25);
+        panel.add(fechaIngresoText);
+        fechaIngresoText.setVisible(false);
+        
+        JLabel terminalLabel = new JLabel("Terminal:");
+        terminalLabel.setBounds(10, 340, 100, 25);
+        panel.add(terminalLabel);
+        terminalLabel.setVisible(false);
+        
+        JTextField terminalText = new JTextField(20);
+        terminalText.setBounds(120, 340, 250, 25);
+        panel.add(terminalText);
+        terminalText.setVisible(false);
+        
+        if(persona.getTipo().equals("Administrador")|| persona.getTipo().equals("Inspector")){
+            fechaIngresoLabel.setVisible(true);
+            fechaIngresoText.setVisible(true);
+        }
+        
+        if (persona.getTipo().equals("Inspector")){
+            pinLabel.setVisible(false);
+            pinText.setVisible(false);
+             terminalLabel.setVisible(true);
+             terminalText.setVisible(true);
+        }
+        
         JButton volverButton = new JButton("Volver");
         volverButton.setBounds(10, 380, 100, 25);
         panel.add(volverButton);
@@ -94,7 +139,9 @@ public class Registrar extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 dispose();
-                new PantallaInicio();
+                if (persona.getTipo().equals("Usuario"))
+                    new PantallaInicio();
+                else new Menu(existente);
             }
         });
 
@@ -102,189 +149,213 @@ public class Registrar extends JFrame {
         JButton registrarButton = new JButton("Registrar");
         registrarButton.setBounds(120, 380, 250, 25);
         panel.add(registrarButton);
-
-        // Acciones basadas en el tipo de persona
-        if (persona.getTipo().equals("Usuario")) {
-            registrarButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    registrarUsuario(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, "Usuario", persona, existente);
+        
+         registrarButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String nombre = nombreText.getText();
+                String apellido = apellidoText.getText();
+                String telefono = telefonoText.getText();
+                String correo = correoText.getText();
+                String password = new String(pinText.getPassword());
+                if (persona.getTipo().equals("Inspector")) password = "0000";
+                String direccion = direccionText.getText();
+                String identificacion = idText.getText();
+                
+                if (!validarNombre(nombre)) {
+                    JOptionPane.showMessageDialog(null, "El nombre debe tener entre 2 y 20 caracteres.");
+                } else if (!validarApellido(apellido)) {
+                    JOptionPane.showMessageDialog(null, "El apellido debe tener entre 1 y 40 caracteres.");
+                } else if (!validarTelefono(telefono)) {
+                    JOptionPane.showMessageDialog(null, "El teléfono debe tener 8 caracteres numéricos.");
+                } else if (!validarCorreo(correo)) {
+                    JOptionPane.showMessageDialog(null, "El correo debe estar en formato parte1@parte2, donde parte1 y parte2 tienen al menos 3 caracteres.");
+                } else if (!validarDireccion(direccion)) {
+                    JOptionPane.showMessageDialog(null, "La dirección debe tener entre 5 y 60 caracteres.");
+                } else if (!validarIdentificacion(identificacion)) {
+                    JOptionPane.showMessageDialog(null, "La identificación no puede ser repetida y debe tener entre 2 y 25 caracteres.");
+                } else if (!validarPin(password)){
+                    JOptionPane.showMessageDialog(null, "El pin debe ser de 6 caracteres numericos");
+                } else{
+                    
+                    persona.setNombre(nombre);
+                    persona.setApellido(apellido);
+                    persona.setTelefono(telefono);
+                    persona.setCorreo(correo);
+                    persona.setPassword(password);
+                    persona.setDireccion(direccion);
+                    persona.setIdentificacion(identificacion);
+                    persona.setFechaIngreso(LocalDate.now());
+        
+                    if (persona.getTipo().equals("Usuario")){
+                        insertarPersona(persona);
+                        new Menu(persona);
+                    }
+                    else if (persona.getTipo().equals("Administrador")){
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                            try{
+                                LocalDate fechaIngreso = LocalDate.parse(fechaIngresoText.getText(), formatter);
+                                if (!validarFecha(fechaIngreso)){
+                                    JOptionPane.showMessageDialog(null, "Fecha debe estar en formato dd-MM-yyyy y ser antes que la fecha del sistema");
+                                }
+                                else {
+                                    persona.setFechaIngreso(fechaIngreso);
+                                    insertarPersona(persona);
+                                    new Menu(existente);
+                                }
+                            }
+                            catch (DateTimeParseException o) {
+                                // Mostrar mensaje de error si la fecha no es válida
+                                JOptionPane.showMessageDialog(null, "Fecha debe estar en formato dd-MM-yyyy y ser antes que la fecha del sistema.");
+                            }
+                        }
+                    
+                    else if (persona.getTipo().equals("Inspector")){
+                        if(fechaIngresoText.getText().equals("")){
+                            JOptionPane.showMessageDialog(null, "Fecha debe estar en formato dd-MM-yyyy y ser antes que la fecha del sistema");
+                        }else{
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                            try{
+                                LocalDate fechaIngreso = LocalDate.parse(fechaIngresoText.getText(), formatter);
+                                String terminal = terminalText.getText();
+                                if (!validarFecha(fechaIngreso)){
+                                    JOptionPane.showMessageDialog(null, "Fecha debe estar en formato dd-MM-yyyy y ser antes que la fecha del sistema");
+                                } else if (!validarTerminal(terminal)){
+                                JOptionPane.showMessageDialog(null,"Terminal debe ser de 6 caracteres numericos");
+                                }else {
+                                    persona.setFechaIngreso(fechaIngreso);
+                                    persona.setTerminal(terminal);
+                                    insertarPersona(persona);
+                                    new CambioPin(persona, "Menu", existente);
+                                }      
+                            }
+                            catch (DateTimeParseException o) {
+                                // Mostrar mensaje de error si la fecha no es válida
+                                JOptionPane.showMessageDialog(null, "Fecha debe estar en formato dd-MM-yyyy y ser antes que la fecha del sistema.");
+                            }  
+                        }
+                    }
+                    
                 }
-            });
-        } else if (persona.getTipo().equals("Administrador")) {
-            agregarCampoFechaIngreso(panel);
-            registrarButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    registrarAdministrador(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona, existente);
-                }
-            });
-        } else if (persona.getTipo().equals("Inspector")) {
-            agregarCampoFechaIngreso(panel);
-            agregarCampoTerminal(panel);
-            registrarButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    registrarInspector(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona, existente);
-                }
-            });
-        }
-    }
-
-    private void registrarUsuario(JTextField nombreText, JTextField apellidoText, JTextField telefonoText,
-                                  JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, String tipo,
-                                  Persona persona, Persona existente) {
-        String nombre = nombreText.getText();
-        String apellido = apellidoText.getText();
-        String telefono = telefonoText.getText();
-        String correo = correoText.getText();
-        String direccion = direccionText.getText();
-        String id = idText.getText();
-        String pin = new String(pinText.getPassword());
-
-        // Validaciones
-        if (!validarNombre(nombre)) {
-            JOptionPane.showMessageDialog(null, "El nombre debe tener entre 2 y 20 caracteres.");
-        } else if (!validarApellido(apellido)) {
-            JOptionPane.showMessageDialog(null, "El apellido debe tener entre 1 y 40 caracteres.");
-        } else if (!validarTelefono(telefono)) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener 8 caracteres numéricos.");
-        } else if (!validarCorreo(correo)) {
-            JOptionPane.showMessageDialog(null, "El correo debe estar en formato parte1@parte2, donde parte1 y parte2 tienen al menos 3 caracteres.");
-        } else if (!validarDireccion(direccion)) {
-            JOptionPane.showMessageDialog(null, "La dirección debe tener entre 5 y 60 caracteres.");
-        } else if (!validarIdentificacion(id)) {
-            JOptionPane.showMessageDialog(null, "La identificación no puede ser repetida y debe tener entre 2 y 25 caracteres.");
-        } else if (!validarPin(pin)) {
-            JOptionPane.showMessageDialog(null, "El PIN debe tener exactamente 4 caracteres.");
-        } else {
-            
-            persona.setNombre(nombre);
-            persona.setApellido(apellido);
-            persona.setTelefono(telefono);
-            persona.setCorreo(correo);
-            persona.setDireccion(direccion);
-            persona.setIdentificacion(id);
-            persona.setPassword(pin);
-            
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate fecha1 = LocalDate.parse("01-01-3000", formatter);
-            
-            if (fecha1.isEqual(persona.getfechaIngreso())){
-                persona.setFechaIngreso(LocalDate.now());
             }
-            
-            if (persona.getTipo().equals("Usuario")) existente = persona;
-            
-            SistemaParqueo.ListaDeUsuarios.add(persona.toArray());
-            SistemaParqueo.controladorArchivos.escribirArchivo(SistemaParqueo.ListaDeUsuarios, "Usuarios.txt");
-            JOptionPane.showMessageDialog(null, "Usuario registrado correctamente.");
-            dispose();
-            new Menu(existente); // Suponiendo que Menu es otra pantalla
-        }
+        });
+        
     }
-
-    private void registrarAdministrador(JTextField nombreText, JTextField apellidoText, JTextField telefonoText,
-                                        JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, JPanel panel, Persona persona, Persona existente) {
-
-        JTextField fechaIngresoText = (JTextField) panel.getComponent(16);
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        try {
-            LocalDate fechaIngreso = LocalDate.parse(fechaIngresoText.getText(), formato);
-            if (!validarFecha(fechaIngreso)) {
-                JOptionPane.showMessageDialog(null, "La fecha de ingreso debe ser menor o igual a la fecha actual.");
-            }
-            else
-            {
-                persona.setFechaIngreso(fechaIngreso);
-                registrarUsuario(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, "Administrador", persona, existente);
-            }
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Debe ser dd-MM-yyyy.");
-        }
+    
+    // Métodos 
+    
+    /**
+    * Inserta una nueva persona en la lista de usuarios y guarda la información en un archivo de texto.
+    * 
+    * @param persona La persona que se va a insertar en el sistema.
+    */
+    private void insertarPersona(Persona persona){
+         SistemaParqueo.ListaDeUsuarios.add(persona.toArray());
+         SistemaParqueo.controladorArchivos.escribirArchivo(SistemaParqueo.ListaDeUsuarios, "Usuarios.txt");
+         JOptionPane.showMessageDialog(null, "Usuario insertado correctamente.");
+         dispose();
     }
-
-    private void registrarInspector(JTextField nombreText, JTextField apellidoText, JTextField telefonoText,
-                                    JTextField correoText, JTextField direccionText, JTextField idText, JPasswordField pinText, JPanel panel, Persona persona, Persona existente) {
-
-        JTextField terminalText = (JTextField) panel.getComponent(18);
-        String terminal = terminalText.getText();
-        if (!validarTerminal(terminal)) {
-            JOptionPane.showMessageDialog(null, "La terminal debe tener exactamente 6 caracteres.");
-        }
-        else{
-            persona.setTerminal(terminal);
-            registrarAdministrador(nombreText, apellidoText, telefonoText, correoText, direccionText, idText, pinText, panel, persona, existente);
-        }
-    }
-
-    // Métodos adicionales para agregar campos dinámicos
-    private void agregarCampoFechaIngreso(JPanel panel) {
-        JLabel fechaIngresoLabel = new JLabel("Fecha Ingreso:");
-        fechaIngresoLabel.setBounds(10, 300, 100, 25);
-        panel.add(fechaIngresoLabel);
-
-        JTextField fechaIngresoText = new JTextField(20);
-        fechaIngresoText.setBounds(120, 300, 250, 25);
-        panel.add(fechaIngresoText);
-    }
-
-    private void agregarCampoTerminal(JPanel panel) {
-        JLabel terminalLabel = new JLabel("Terminal:");
-        terminalLabel.setBounds(10, 340, 100, 25);
-        panel.add(terminalLabel);
-
-        JTextField terminalText = new JTextField(20);
-        terminalText.setBounds(120, 340, 250, 25);
-        panel.add(terminalText);
-    }
-
-    // Métodos de validación de datos
+    
+    /**
+    * Valida que el nombre tenga una longitud entre 2 y 20 caracteres.
+    * 
+    * @param nombre El nombre a validar.
+    * @return true si el nombre tiene una longitud válida, false en caso contrario.
+    */
     private boolean validarNombre(String nombre) {
         return nombre.length() >= 2 && nombre.length() <= 20;
     }
 
+    /**
+    * Valida que el apellido tenga una longitud entre 1 y 40 caracteres.
+    * 
+    * @param apellido El apellido a validar.
+    * @return true si el apellido tiene una longitud válida, false en caso contrario.
+    */
     private boolean validarApellido(String apellido) {
         return apellido.length() >= 1 && apellido.length() <= 40;
     }
 
+    
+    /**
+     * Valida que el teléfono contenga exactamente 8 dígitos numéricos.
+     * 
+     * @param telefono El número de teléfono a validar.
+     * @return true si el teléfono es válido, false en caso contrario.
+     */
     private boolean validarTelefono(String telefono) {
         return telefono.matches("\\d{8}");
     }
 
+    /**
+    * Valida que el correo tenga el formato correcto (por ejemplo, usuario@dominio.com).
+    * 
+    * @param correo El correo electrónico a validar.
+    * @return true si el correo tiene el formato correcto, false en caso contrario.
+    */
     private boolean validarCorreo(String correo) {
         return correo.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
     }
 
+    /**
+    * Valida que la dirección tenga una longitud entre 5 y 60 caracteres.
+    * 
+    * @param direccion La dirección a validar.
+    * @return true si la dirección tiene una longitud válida, false en caso contrario.
+    */
     private boolean validarDireccion(String direccion) {
         return direccion.length() >= 5 && direccion.length() <= 60;
     }
 
+    /**
+    * Valida que la identificación sea única y tenga una longitud entre 2 y 25 caracteres.
+    * 
+    * @param id La identificación a validar.
+    * @return true si la identificación es válida y no existe en el sistema, false en caso contrario.
+    */
     private boolean validarIdentificacion(String id) {
-    // Verificar que la longitud de la identificación esté en el rango correcto
-    if (id.length() >= 2 && id.length() <= 25) {
-        // Iterar sobre la lista de usuarios para buscar si la identificación ya existe
-        for (String[] data : SistemaParqueo.ListaDeUsuarios) {
-            // Comparar la identificación (en la posición 8 del array) con el id proporcionado
-            if (data[7].equals(id)) {
-                return false; // La identificación ya existe
+        // Verificar que la longitud de la identificación esté en el rango correcto
+        if (id.length() >= 2 && id.length() <= 25) {
+            // Iterar sobre la lista de usuarios para buscar si la identificación ya existe
+            for (String[] data : SistemaParqueo.ListaDeUsuarios) {
+                // Comparar la identificación (en la posición 8 del array) con el id proporcionado
+                if (data[7].equals(id)) {
+                    return false; // La identificación ya existe
+                }
             }
+            return true; // La identificación no existe
+        } else {
+            return false; // La longitud de la identificación no es válida
         }
-        return true; // La identificación no existe
-    } else {
-        return false; // La longitud de la identificación no es válida
     }
-}
 
-
+    /**
+     * Valida que el PIN tenga exactamente 4 dígitos numéricos.
+     * 
+     * @param pin El PIN a validar.
+     * @return true si el PIN es válido, false en caso contrario.
+     */
     private boolean validarPin(String pin) {
         return pin.length() == 4 && pin.matches("\\d{4}");
     }
 
+    /**
+    * Valida que la fecha de ingreso no sea posterior a la fecha actual.
+    * 
+    * @param fechaIngreso La fecha de ingreso a validar.
+    * @return true si la fecha es válida, false en caso contrario.
+    */
     private boolean validarFecha(LocalDate fechaIngreso) {
         return !fechaIngreso.isAfter(LocalDate.now());
     }
 
+    /**
+    * Valida que el número de terminal tenga una longitud de 6 caracteres y que no exista
+    * un terminal con el mismo número para un Inspector.
+    * 
+    * @param terminal El número de terminal a validar.
+    * @return true si el número de terminal es válido, false en caso contrario.
+    */
     private boolean validarTerminal(String terminal) {
         for (String[] data : SistemaParqueo.ListaDeUsuarios) {
             // Comparar la identificación (en la posición 8 del array) con el id proporcionado
@@ -294,5 +365,6 @@ public class Registrar extends JFrame {
             }
         }
         return terminal.length() == 6;
+
     }
 }
