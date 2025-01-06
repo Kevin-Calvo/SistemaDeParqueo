@@ -30,10 +30,10 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Navigate to project directory
-        run: cd SistemaParqueo # Cambia "SistemaDeParqueo" al nombre del subdirectorio donde está el pom.xml
-      - name: Build and analyze
+      - name: Build and analyze in subdirectory
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Kevin-Calvo_SistemaDeParqueo
+        run: |
+          cd SistemaParqueo # Cambia "SistemaDeParqueo" al nombre del subdirectorio donde está el pom.xml
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Kevin-Calvo_SistemaDeParqueo
