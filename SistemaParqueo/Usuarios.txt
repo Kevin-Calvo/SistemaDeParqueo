@@ -4,3 +4,5 @@ Administrador;Kevi;Calvo;83453887;kevinyadir@hotmail.com;1504;Muy lejos;11903004
 Inspector;Paco;Paquito;83453888;kevinyadir@hotmail.com;1504;Ufff ni idea;11;21-10-2024;123458
 Administrador;Camila;Lizano;12345678;kevinyadir@jhotmail.com;1504;ah no se, tu dime;12;30-04-2024
 Usuario;Andres;Arroyo;83453888;kevinyadir@hotmail.com;1504;por ahi;119030043;22-10-2024;500.0
+Usuario;Kevin;Calvo;83453888;kevinyadir@hotmail.com;1405;Concepcion;119030051;21-11-2024;0.0
+Administrador;Pablo;Solano;12345678;pablo@gmail.com;1504;Alajuela;12345678;20-11-2024

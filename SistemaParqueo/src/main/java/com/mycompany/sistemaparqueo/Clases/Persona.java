@@ -237,6 +237,10 @@ public abstract class Persona {
         return null;
     }
     
+    public int impuestos(int dinero){
+      return dinero * 13;  
+    };
+    
     /**
      * Convierte la información de la persona a un arreglo de cadenas.
      * Este método es abstracto y no realiza ninguna acción en esta clase base.
